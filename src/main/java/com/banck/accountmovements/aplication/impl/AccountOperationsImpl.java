@@ -12,13 +12,12 @@ import io.netty.handler.timeout.WriteTimeoutHandler;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-import reactor.netty.http.client.HttpClient;
 import reactor.netty.tcp.TcpClient;
 
 /**
@@ -28,11 +27,13 @@ import reactor.netty.tcp.TcpClient;
 @Service
 @RequiredArgsConstructor
 public class AccountOperationsImpl implements AccountOperations {
- 
+
+    @Value(value = "${service.account.url}")
+    private String SERVICE_ACCOUNT_URL;
     Logger logger = LoggerFactory.getLogger(AccountOperationsImpl.class);
 
     @Override
-    public Mono<Account> getAccount(String customer) { 
+    public Mono<Account> getAccount(String customer) {
         TcpClient tcpClient = TcpClient.create()
                 .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 3000)
                 .doOnConnected(connection
@@ -40,7 +41,7 @@ public class AccountOperationsImpl implements AccountOperations {
                         .addHandlerLast(new WriteTimeoutHandler(3)));
 
         WebClient webClient = WebClient.builder()
-                .baseUrl("http://banck-account.southcentralus.azurecontainer.io:8081")
+                .baseUrl(SERVICE_ACCOUNT_URL)
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
                 //.clientConnector(new ReactorClientHttpConnector(HttpClient.from(tcpClient))) // timeout
