@@ -3,21 +3,6 @@ server:
 
 spring:
   profiles:
-    active: qas
+    active: @spring.profiles.active@
   application:
     name: accountmovement-microservice
-
----
-spring:
-  profiles: dev
-  cloud:
-    config:
-      enabled: true
-      uri: http://localhost:9998
----
-spring:
-  profiles: qas
-  cloud:
-    config:
-      enabled: true
-      uri: http://config-server.southcentralus.azurecontainer.io:9998
