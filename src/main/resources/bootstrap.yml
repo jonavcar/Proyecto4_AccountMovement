@@ -2,8 +2,21 @@ server:
   port: 8083
 
 spring:
+  profiles:
+    active: qas
   application:
     name: accountmovement-microservice
+
+---
+spring:
+  profiles: dev
+  cloud:
+    config:
+      enabled: true
+      uri: http://localhost:9998
+---
+spring:
+  profiles: qas
   cloud:
     config:
       enabled: true
