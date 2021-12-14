@@ -24,7 +24,7 @@ jobs:
         cache: maven
     - name: Build with Maven
       run: |
-        mvn -B package --file pom.xml
+        mvn -B package -Pqas --file pom.xml
         mkdir staging && cp target/*.jar staging
 
     - name: 'Login via Azure CLI'
